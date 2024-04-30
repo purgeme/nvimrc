@@ -8,6 +8,9 @@ return {
             "MunifTanjim/nui.nvim",
         },
         opts = {
+            filesystem = {
+                hijack_netrw_behavior = "open_current",
+            },
             mappings = {
                 ["<space>"] = {
                     "none",
@@ -24,6 +27,7 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim' },
         config = function()
             local builtin = require('telescope.builtin')
+            require('telescope').load_extension("aerial")
         end
     },
     {
@@ -143,4 +147,32 @@ return {
             require'alpha'.setup(require'alpha.themes.startify'.config)
         end
     },
+    {
+        "numToStr/FTerm.nvim",
+        opts = {
+            border = 'single',
+            dimensions = {
+                height = 0.8,
+                width = 0.8,
+            },
+        },
+        config = function(opts)
+            require('FTerm').setup(opts)
+        end
+    },
+    {
+      'stevearc/aerial.nvim',
+      opts = {},
+      -- Optional dependencies
+      dependencies = {
+         "nvim-treesitter/nvim-treesitter",
+         "nvim-tree/nvim-web-devicons"
+      },
+    },
+    {
+      "lervag/vimtex",
+      init = function()
+        -- Use init for configuration, don't use the more common "config".
+      end
+    }
 }

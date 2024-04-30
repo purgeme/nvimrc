@@ -29,7 +29,7 @@ return {
                         }
                     })
 
-                    require('lspconfig').rust_analyzer.setup({});
+                    -- require('lspconfig').rust_analyzer.setup({});
 
                     local cmp = require("cmp");
                     -- for _, source in ipairs(opts.sources) do

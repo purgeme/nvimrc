@@ -26,6 +26,9 @@ vim.cmd([[colorscheme gruvbox]])
 
 -- KEYMAPS
 -----------------------------------------------------------------------------------
+
+-- local lazyterm = function() Util.terminal(nil, { cwd = Util.root() }) end
+
 -- Which Key
 require("which-key").register({
     k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
@@ -56,6 +59,12 @@ require("which-key").register({
     mode = { "n" },
 })
 
+require("which-key").register({
+    ["/"] = { function() require('FTerm').toggle() end, "Lazyterm"},
+}, {
+    prefix = "<leader>",
+    mode = { "n", "t" },
+})
 
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -71,7 +80,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 i = { function() vim.lsp.buf.implementation() end, "Go to implementation" },
                 t = { function() vim.lsp.buf.type_definition() end, "Go to type definition" },
                 r = { function() vim.lsp.buf.rename() end, "Rename" },
-                f = { function() vim.lsp.buf.format({ async = true }) end, "Format code" },
+                F = { function() vim.lsp.buf.format({ async = true }) end, "Format code" },
+                f = { "<cmd>Telescope aerial<CR>", "Format code" },
             },
         }, {
             prefix = "<leader>",
@@ -86,8 +96,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         }, {
             prefix = "<leader>",
             mode = { "n", "v" },
-        })
-    end
+        }) end
 })
 
 -- Toggle comments
@@ -99,7 +108,13 @@ require("mini.comment").setup({
 })
 
 -- CMP
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
 local cmp = require("cmp")
+local luasnip = require("luasnip")
 cmp.setup({
     mapping = {
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -107,6 +122,30 @@ cmp.setup({
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.abort(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+                -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
+                -- that way you will only jump inside the snippet region
+            elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+            elseif has_words_before() then
+                cmp.complete()
+            else
+
+                fallback()
+            end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+            else
+                fallback()
+            end
+        end, { "i", "s" }),
     }
 })
 
@@ -132,3 +171,9 @@ cmp.setup({
 --     end,
 -- })
 -----------------------------------------------------------------------------------
+
+vim.cmd "filetype plugin indent on"
+vim.g.vimtex_view_method = "zathura"
+vim.g.vimtex_view_general_viewer = 'okular'
+vim.g.vimtex_view_general_options = "--unique file:@pdf#src:@line@tex"
+vim.g.vimtex_compile_method = "tectonic"
