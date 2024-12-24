@@ -118,9 +118,9 @@ return {
                 row = 0,
                 col = 1
             },
-            yadm                         = {
-                enable = false
-            },
+            -- yadm                         = {
+            --     enable = false
+            -- },
         },
         config = function(_, opts)
             require("gitsigns").setup(opts)
@@ -173,6 +173,15 @@ return {
       "lervag/vimtex",
       init = function()
         -- Use init for configuration, don't use the more common "config".
+      end
+    },
+    {
+      "ibhagwan/fzf-lua",
+      -- optional for icon support
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      config = function()
+        -- calling `setup` is optional for customization
+        require("fzf-lua").setup({})
       end
     }
 }

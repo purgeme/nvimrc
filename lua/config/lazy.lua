@@ -30,74 +30,92 @@ vim.cmd([[colorscheme gruvbox]])
 -- local lazyterm = function() Util.terminal(nil, { cwd = Util.root() }) end
 
 -- Which Key
-require("which-key").register({
-    k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
-    e = { "<cmd>Neotree toggle<cr>", "Toggle Neotree" },
-    q = {
-        name = "Quit",
-        w = { "<cmd>wq<cr>", "Save & Quit" },
-        q = { "<cmd>quitall<cr>", "Quit" },
-        d = { "<cmd>quitall!<cr>", "Ignore Changes & Quit" },
+require("which-key").add({
+    {"<leader>k", "<cmd>Telescope keymaps<cr>", desc = "Keymaps"},
+    {"<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle Neotree"},
+    {
+        desc = "Quit",
+        {"<leader>qw", "<cmd>wq<cr>", desc = "Save & Quit"},
+        {"<leader>qq", "<cmd>quitall<cr>", desc = "Quit"},
+        {"<leader>qd", "<cmd>quitall!<cr>", desc = "Ignore Changes & Quit"},
     },
-    s = { "<cmd>w<cr>", "Save file" },
-    f = {
-        name = "Files",
-        f = { "<cmd>Telescope find_files<cr>", "Telescope Files" }
+    {"<leader>s", "<cmd>w<cr>", desc = "Save file"},
+    {
+        desc = "Files",
+        {"<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Telescope Files"},
     },
-    g = {
-        name = "Git",
-        f = { "<cmd>Telescope git_files<cr>", "Telescope Files" }
+    {
+        desc = "Git Files",
+        {"<leader>gf", "<cmd>Telescope git_files<cr>", desc = "Telescope Files"},
     },
-    d = {
-        name = "Diagnostics",
-        t = { function() require('trouble').toggle() end, "Toggle diagnostics" },
-        ["["] = { function() require('trouble').next({ skip_groups = true, jump = true }) end, "Next diagnostic" },
-        ["]"] = { function() require('trouble').previous({ skip_groups = true, jump = true }) end, "Previous diagnostic" },
+    {
+        desc = "Diagnostics",
+        {"<leader>dt", function() require('trouble').toggle('diagnostics') end, desc = "Toggle diagnostics"},
+        {"<leader>d[", function() require('trouble').previous({ 'diagnostics', skip_groups = true, jump = true }) end, desc = "Previous diagnostics"},
+        {"<leader>d]", function() require('trouble').next({ 'diagnostics', skip_groups = true, jump = true }) end, desc = "Next diagnostics"},
     },
-}, {
-    prefix = "<leader>",
-    mode = { "n" },
 })
 
-require("which-key").register({
-    ["/"] = { function() require('FTerm').toggle() end, "Lazyterm"},
-}, {
-    prefix = "<leader>",
-    mode = { "n", "t" },
+require("which-key").add({
+    {
+        desc = "Lazyterm",
+        mode = {"n"},
+        {"<A-i>", function() require('FTerm').toggle() end, desc = "Lazyterm"}
+    },
+    {
+        desc = "Lazyterm",
+        mode = {"t"},
+        {"<A-i>", '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', desc = "Lazyterm"}
+    }
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = function(ev)
-        -- Enable completion triggered by <c-x><c-o>
-        vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-        require("which-key").register({
-            c = {
-                name = "Code",
-                D = { function() vim.lsp.buf.declaration() end, "Go to declaration" },
-                d = { function() vim.lsp.buf.definition() end, "Go to definition" },
-                h = { function() vim.lsp.buf.hover() end, "Hover over code" },
-                i = { function() vim.lsp.buf.implementation() end, "Go to implementation" },
-                t = { function() vim.lsp.buf.type_definition() end, "Go to type definition" },
-                r = { function() vim.lsp.buf.rename() end, "Rename" },
-                F = { function() vim.lsp.buf.format({ async = true }) end, "Format code" },
-                f = { "<cmd>Telescope aerial<CR>", "Format code" },
-            },
-        }, {
-            prefix = "<leader>",
-            mode = { "n" }
-        })
-
-        require("which-key").register({
-            c = {
-                name = "Code",
-                a = { function() vim.lsp.buf.code_action() end, "Code action" },
-            }
-        }, {
-            prefix = "<leader>",
-            mode = { "n", "v" },
-        }) end
+            -- Enable completion triggered by <c-x><c-o>
+            vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+            require("which-key").add({
+                {
+                    desc = "Code",
+                    {"<leader>cD", function() vim.lsp.buf.declaration() end, desc = "Go to declaration"},
+                    {"<leader>cd", function() vim.lsp.buf.definition() end, desc = "Go to definition"},
+                    {"<leader>ch", function() vim.lsp.buf.hover() end, desc = "Hover over code"},
+                    {"<leader>ci", function() vim.lsp.buf.implementation() end, desc = "Go to implementation"},
+                    {"<leader>ct", function() vim.lsp.buf.type_definition() end, desc = "Go to type definition"},
+                    {"<leader>cr", function() vim.lsp.buf.rename() end, desc = "Rename"},
+                    {"<leader>cF", function() vim.lsp.buf.format({ async = true }) end, desc = "Format code"},
+                    {"<leader>cf", "<cmd>Telescope aerial<CR>", desc = "Format code"},
+                    {"<leader>ca", function() vim.lsp.buf.code_action() end, desc = "Code action", mode = { "n", "v" }},
+                }
+            })
+        end
 })
+--         require("which-key").register({
+--             c = {
+--                 name = "Code",
+--                 D = { function() vim.lsp.buf.declaration() end, "Go to declaration" },
+--                 d = { function() vim.lsp.buf.definition() end, "Go to definition" },
+--                 h = { function() vim.lsp.buf.hover() end, "Hover over code" },
+--                 i = { function() vim.lsp.buf.implementation() end, "Go to implementation" },
+--                 t = { function() vim.lsp.buf.type_definition() end, "Go to type definition" },
+--                 r = { function() vim.lsp.buf.rename() end, "Rename" },
+--                 F = { function() vim.lsp.buf.format({ async = true }) end, "Format code" },
+--                 f = { "<cmd>Telescope aerial<CR>", "Format code" },
+--             },
+--         }, {
+--             prefix = "<leader>",
+--             mode = { "n" }
+--         })
+-- 
+--         require("which-key").register({
+--             c = {
+--                 name = "Code",
+--                 a = { function() vim.lsp.buf.code_action() end, "Code action" },
+--             }
+--         }, {
+--             prefix = "<leader>",
+--             mode = { "n", "v" },
+--         }) 
 
 -- Toggle comments
 require("mini.comment").setup({
