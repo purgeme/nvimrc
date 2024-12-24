@@ -42,7 +42,7 @@ require("which-key").add({
     {"<leader>s", "<cmd>w<cr>", desc = "Save file"},
     {
         desc = "Files",
-        {"<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Telescope Files"},
+        {"<leader>ff", "<cmd>Telescope find_files shorten_path=true<cr>", desc = "Telescope Files"},
     },
     {
         desc = "Git Files",
