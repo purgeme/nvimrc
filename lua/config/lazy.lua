@@ -31,7 +31,7 @@ vim.cmd([[colorscheme gruvbox]])
 
 -- Which Key
 require("which-key").add({
-    {"<leader>k", "<cmd>Telescope keymaps<cr>", desc = "Keymaps"},
+    {"<leader>k", function() require('telescope.builtin').keymaps() end, desc = "Keymaps"},
     {"<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle Neotree"},
     {
         desc = "Quit",
@@ -90,32 +90,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
             })
         end
 })
---         require("which-key").register({
---             c = {
---                 name = "Code",
---                 D = { function() vim.lsp.buf.declaration() end, "Go to declaration" },
---                 d = { function() vim.lsp.buf.definition() end, "Go to definition" },
---                 h = { function() vim.lsp.buf.hover() end, "Hover over code" },
---                 i = { function() vim.lsp.buf.implementation() end, "Go to implementation" },
---                 t = { function() vim.lsp.buf.type_definition() end, "Go to type definition" },
---                 r = { function() vim.lsp.buf.rename() end, "Rename" },
---                 F = { function() vim.lsp.buf.format({ async = true }) end, "Format code" },
---                 f = { "<cmd>Telescope aerial<CR>", "Format code" },
---             },
---         }, {
---             prefix = "<leader>",
---             mode = { "n" }
---         })
--- 
---         require("which-key").register({
---             c = {
---                 name = "Code",
---                 a = { function() vim.lsp.buf.code_action() end, "Code action" },
---             }
---         }, {
---             prefix = "<leader>",
---             mode = { "n", "v" },
---         }) 
 
 -- Toggle comments
 require("mini.comment").setup({

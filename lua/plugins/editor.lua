@@ -8,6 +8,11 @@ return {
             "MunifTanjim/nui.nvim",
         },
         opts = {
+            close_if_last_window = true,
+            popup_border_style = "rounded",
+            enable_git_status = true,
+            enable_diagnostics = true,
+            open_files_do_not_replace_types = { "terminal", "trouble", "qf"},
             filesystem = {
                 hijack_netrw_behavior = "open_current",
             },
