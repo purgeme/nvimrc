@@ -42,11 +42,11 @@ require("which-key").add({
     {"<leader>s", "<cmd>w<cr>", desc = "Save file"},
     {
         desc = "Files",
-        {"<leader>ff", "<cmd>Telescope find_files shorten_path=true<cr>", desc = "Telescope Files"},
+        {"<leader>ff", function() require('telescope.builtin').find_files() end, desc = "Telescope Files"},
     },
     {
         desc = "Git Files",
-        {"<leader>gf", "<cmd>Telescope git_files<cr>", desc = "Telescope Files"},
+        {"<leader>gf", function() require('telescope.builtin').git_files() end, desc = "Telescope Files"},
     },
     {
         desc = "Diagnostics",
